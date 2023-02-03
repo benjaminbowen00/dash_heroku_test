@@ -1,0 +1,4 @@
+*.pyc
+heroku_env
+.env
+.DS_Store

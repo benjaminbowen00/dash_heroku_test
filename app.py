@@ -16,6 +16,18 @@ valid_username_pairs = [[user_value, password_value]]
 auth=dash_auth.BasicAuth(app, valid_username_pairs)
 
 
+app.index_string= """
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TYV2KCYLG2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-TYV2KCYLG2');
+</script>
+"""
+
 df = pd.read_csv("data.csv")
 
 app.layout = html.Div([

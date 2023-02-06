@@ -3,10 +3,18 @@
 
 from dash import Dash, html, dcc, Input, Output
 import plotly.express as px
+import dash_auth
 import pandas as pd
+import os
 
 app = Dash(__name__)
 server = app.server
+
+user_value = os.getenv("test_user")
+password_value = os.getenv("test_password")
+valid_username_pairs = [[user_value, password_value]]
+auth=dash_auth.BasicAuth(app, valid_username_pairs)
+
 
 df = pd.read_csv("data.csv")
 

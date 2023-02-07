@@ -1,49 +1,49 @@
 # Run this app with `python app.py` and
 # visit http://127.0.0.1:8050/ in your web browser.
 
-from dash import Dash, html, dcc, Input, Output
+from dash import Dash, html, dcc, Input, Output, State
 import plotly.express as px
-import dash_auth
+# import dash_auth
 import pandas as pd
 import os
 
 app = Dash(__name__)
 server = app.server
 
-user_value = os.getenv("test_user")
-password_value = os.getenv("test_password")
-valid_username_pairs = [[user_value, password_value]]
-auth=dash_auth.BasicAuth(app, valid_username_pairs)
+# user_value = os.getenv("test_user")
+# password_value = os.getenv("test_password")
+# valid_username_pairs = [[user_value, password_value]]
+# auth=dash_auth.BasicAuth(app, valid_username_pairs)
 
 
-app.index_string = '''
-<!DOCTYPE html>
-<html>
-    <head>
-        <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-TYV2KCYLG2"></script>
-        <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
+# app.index_string = '''
+# <!DOCTYPE html>
+# <html>
+#     <head>
+#         <!-- Google tag (gtag.js) -->
+#         <script async src="https://www.googletagmanager.com/gtag/js?id=G-TYV2KCYLG2"></script>
+#         <script>
+#         window.dataLayer = window.dataLayer || [];
+#         function gtag(){dataLayer.push(arguments);}
+#         gtag('js', new Date());
 
-        gtag('config', 'G-TYV2KCYLG2');
-        </script>
-        {%metas%}
-        <title>{%title%}</title>
-        {%favicon%}
-        {%css%}
-    </head>
-    <body>
-        {%app_entry%}
-        <footer>
-            {%config%}
-            {%scripts%}
-            {%renderer%}
-        </footer>
-    </body>
-</html>
-'''
+#         gtag('config', 'G-TYV2KCYLG2');
+#         </script>
+#         {%metas%}
+#         <title>{%title%}</title>
+#         {%favicon%}
+#         {%css%}
+#     </head>
+#     <body>
+#         {%app_entry%}
+#         <footer>
+#             {%config%}
+#             {%scripts%}
+#             {%renderer%}
+#         </footer>
+#     </body>
+# </html>
+# '''
 df = pd.read_csv("data.csv")
 
 app.layout = html.Div([
@@ -55,8 +55,21 @@ app.layout = html.Div([
         value=df['year'].min(),
         marks={str(year): str(year) for year in df['year'].unique()},
         id='year-slider'
-    )
+    ),
+    dcc.Dropdown(['NYC', 'MTL', 'SF'], 'NYC', id='demo-dropdown', style={'width':'200px'}),
+    html.Button('Submit', id='submit-val', n_clicks=0),
+    html.H4(id="output-text")
+
 ])
+
+@app.callback(
+    Output('output-text', 'children'),
+    Input('submit-val', 'n_clicks'), State('demo-dropdown', 'value'))
+def update_text(n_clicks, city):
+    if n_clicks != 0:
+        return city
+    else:
+        return "no value selected yet"
 
 
 @app.callback(

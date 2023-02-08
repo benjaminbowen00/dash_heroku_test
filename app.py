@@ -45,6 +45,8 @@ server = app.server
 # </html>
 # '''
 df = pd.read_csv("data.csv")
+df2 = pd.read_csv("crime_data.csv")
+districts = sorted(df2.District.unique().tolist()[:9])
 
 app.layout = html.Div([
     dcc.Graph(id='graph-with-slider'),
@@ -58,7 +60,9 @@ app.layout = html.Div([
     ),
     dcc.Dropdown(['NYC', 'MTL', 'SF'], 'NYC', id='demo-dropdown', style={'width':'200px'}),
     html.Button('Submit', id='submit-val', n_clicks=0),
-    html.H4(id="output-text")
+    html.H4(id="output-text"),
+    dcc.Dropdown(options=[{'label':d, 'value':d} for d in districts], value=districts[0], id="district-dd", style={"width":"400px"}),
+    dcc.Graph(id="graph2")
 
 ])
 
@@ -88,6 +92,16 @@ def update_figure(selected_year):
 
     return fig
 
+
+@app.callback(
+    Output('graph2', 'figure'),
+    Input('district-dd', 'value'))
+def update_figure(district):
+    filtered_df = df2[df2.District == district]
+    data = filtered_df.groupby("Description").size().reset_index().rename(columns={0:"count"})
+    fig = px.bar(data, x="Description", y="count")
+
+    return fig
 
 if __name__ == '__main__':
     app.run_server(debug=True)

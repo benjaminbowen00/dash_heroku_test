@@ -10,7 +10,8 @@ app = Dash(__name__)
 server = app.server
 
 
-
+from dash_auth0_oauth.auth0_auth import Auth0Auth
+auth = Auth0Auth(app)
 
 df = pd.read_csv("data.csv")
 df2 = pd.read_csv("crime_data.csv")
